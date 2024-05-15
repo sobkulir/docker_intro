@@ -1,5 +1,34 @@
 # Docker Introduction
 
+## Setting the scene (Docker vs Hypervisor)
+
+### Docker
+![Docker-3](https://github.com/sobkulir/docker_intro/assets/14258647/53bae21e-5140-4076-8deb-11683c48725d)
+
+Docker Containers:
+* Feel like separate OS instances, think Virtual Machine from VirtualBox.
+* In reality are "just" processes on Host OS
+* Therefore, all **containers share the same kernel** (i.e. the kernel of the host). This allows having Ubuntu and Fedora containers side-by-side in the figure above, as different Linux distros share the same kernel.
+
+Isolation:
+* Other processes, network, memory, users, and other resources need to be isolated between containers (otherwise we wouldn't get benefits of separate OS instances)
+* Achieved using built-in Linux kernel isolation support (LXC, cgroups, ...)
+
+### Hypervisors (VirtualBox, VMware, ...)
+![Hypervisor-2](https://github.com/sobkulir/docker_intro/assets/14258647/282ebb52-6bf1-41cf-a578-778dc2f53e4d)
+
+Guest OSes:
+* Are full-blown Operating Systems, including kernel
+* All **Guest OSes share the same CPU**. Therefore, all Guest OSes must support Host CPU instruction set (x86, x64, arm32, arm64, ...).
+
+Isolation:
+* Achieved by paravirtualization in Hypervisor or via Hardware support (AMD-V, ...).
+
+### Comparison
+* Docker containers can "boot" much faster -- a separate kernel does not need to be initialized.
+* Docker images can be smaller in size as they don't require kernel to be compiled in. For example Alpine Linux docker image can be just 5MB. 
+* Hypervisors can provide more security (see footnotes) and better resource management guarantees.
+
 ## Installation
 See official docs: https://docs.docker.com/engine/install/
 
@@ -72,11 +101,16 @@ To get a shell into a running container, use:
 ```
 docker exec -it <container_id> /bin/sh
 ```
+### Bash script as entrypoint
+TODO
 
 ## Footnotes
 
 Very good:
     1. [Understanding virtualization](https://www.vmware.com/content/dam/digitalmarketing/vmware/en/pdf/techpaper/VMware_paravirtualization.pdf)
+
+On Docker security:
+    1. [Is Docker more secure than VMs or bare metal?](https://security.stackexchange.com/a/169649)
 
 From random internet meanderings:
     1. [Virtual machine vs Docker](https://stackoverflow.com/questions/16047306/how-is-docker-different-from-a-virtual-machine)
