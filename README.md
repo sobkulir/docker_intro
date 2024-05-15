@@ -92,8 +92,7 @@ gcc-10 simple.c
 To fall through files into the container, we use `-v` flag -- in this example, contents of the current host directory will be mounted
 into `/app` inside the container.
 
-In this example we saw how Docker can be used to quickly try out different software (`gcc-10` in this case), and how to mount host
-directories into container.
+In this example we saw how Docker can be used to quickly try out different software (`gcc-10` in this case), how to build an image, start a container, and how to mount host directories into container.
 
 ### Node server example (01-server)
 In another example, there's a NodeJs HTTP server. However, running it with newer version of Node fails. Try:
