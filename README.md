@@ -75,7 +75,9 @@ docker exec -it <container_id> /bin/sh
 
 ## Footnotes
 
-### Differences to VMs
-From my internet meanderings:
+Very good:
+    1. [Understanding virtualization](https://www.vmware.com/content/dam/digitalmarketing/vmware/en/pdf/techpaper/VMware_paravirtualization.pdf)
+
+From random internet meanderings:
     1. [Virtual machine vs Docker](https://stackoverflow.com/questions/16047306/how-is-docker-different-from-a-virtual-machine)
     2. [How can Docker run distros with different kernels?](https://stackoverflow.com/questions/32841982/how-can-docker-run-distros-with-different-kernels)
