@@ -91,7 +91,35 @@ Shows port binding with `-p`.
 
 ## Docker compose
 Allows networking and controlling together multiple services.
+```
+version: '3'
 
+services:
+  web:
+    image: nginx:1.32
+    env_file:
+      - .env
+    volumes:
+      - web-data:/data
+    ports:
+      - "80:80"
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15.2
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "5434:5432"
+
+volumes:
+  db-data:
+  web-data:
+```
 ## My tricks
 ### Entrypoint override
 Override entrypoint with `docker run --entrypoint` to run `/bin/bash` for example, even on `nginx` image, etc.
