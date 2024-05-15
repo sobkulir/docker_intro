@@ -58,6 +58,7 @@ To fall through files into the container, we use `-v` flag -- in this example, c
 into `/app` inside the container.
 
 ### Node server example
+Shows port binding with `-p`.
 
 ## Docker compose
 Allows networking and controlling together multiple services.
