@@ -62,32 +62,78 @@ After exiting the container (e.g. running `exit` or `Ctrl^D`) you can think of t
 although that is not completely true, one can restart exited containers. To all containers including 
 stopped ones, use `docker ps -a`.
 
-### Extending base image
+### Extending base image (00-gcc)
 The original example didn't do much, since our `Dockerfile` only had the base image and no custom changes, we could've just
 ran it directly:
 ```bash
 docker run -it ubuntu:jammy
 ```
 
-However, now let's imagine a situation where we wanted to try something out in an older version of GCC (C compiler), say 3.4 . We could
-install it globally on our computer, but it might be then not trivial to get rid of it. We could install the GCC 3.4 inside the
+However, now let's imagine a situation where we wanted to try something out in an older version of GCC (C compiler), say version 10. We could
+install it globally on our computer, but it might be then not trivial to get rid of it. We could install the GCC 10 inside the
 Docker image:
 ```
 FROM ubuntu:jammy
 
 RUN apt-get update \
-    && apt-get install -y gcc-3.4
+    && apt-get install -y gcc-10
 ```
 
-Now after rebuilding and running the container, we can use gcc3.4 inside of it:
+Now after rebuilding and running the container, we can use `gcc-10` inside of it:
 ```bash
-docker run -it -v .:/app my_ubuntu
+docker build -t gcc .
+docker run -it -v .:/app gcc
+# (inside container)
+cd /app
+gcc-10 simple.c
+# Run the compiled binary
+./a.out
 ```
 To fall through files into the container, we use `-v` flag -- in this example, contents of the current host directory will be mounted
 into `/app` inside the container.
 
-### Node server example
-Shows port binding with `-p`.
+In this example we saw how Docker can be used to quickly try out different software (`gcc-10` in this case), and how to mount host
+directories into container.
+
+### Node server example (01-server)
+In another example, there's a NodeJs HTTP server. However, running it with newer version of Node fails. Try:
+```bash
+cd 01-server
+docker run -it -v .:/app node:22 /bin/bash
+# (inside container)
+cd /app
+node main.js
+# Expected:
+# TypeError: util.print is not a function
+```
+
+Note that an extra argument `/bin/bash` was added to `docker run`. This leads to running `/bin/bash` (a shell) instead of
+node interpreter as the default command of the container. To see this difference, try running the above without `/bin/bash`.
+
+Looking at the source code of `00-server/main.js` it can be observed that `util.print()` function was removed in Node12. Now,
+we could:
+1. Fix the code
+2. Install the archaic Node 11 on our machine
+3. Run a Docker image with Node 11
+
+You guessed it hehe, we're going to take option 3). Run the following:
+```
+docker run -it -v .:/app node:11 /bin/bash
+cd /app && node main.js
+# Expected:
+# Server is listening on port 3000
+```
+
+However, opening `http://localhost:3000` in your browser most likely won't work. The problem is that the container above is running
+has in an isolated network. In other to *bind* the port of the isolated network to a port of the host, the `-p` flag can be used.
+Note that *host* here, in layman terms, means "where we're running the `docker` commands from", i.e., our machine. Here we bind port `3000` inside the container into `4000` on host:
+```bash
+docker run -it -v .:/app node:11 /bin/bash
+cd /app && node main.js
+```
+
+Now opening `http://localhost:4000` should show message "Helloo". In this example, we've seen one more example of using Docker for
+quickly changing versions, and also how ports can be bound to the host.
 
 ## Docker compose
 Allows networking and controlling together multiple services.
@@ -120,9 +166,26 @@ volumes:
   db-data:
   web-data:
 ```
-## My tricks
+
+## Wrap-up
+Why use Docker:
+* Fast prototyping 
+    - Install things with easy cleanup
+    - Use pre-made images with needed versions
+* Fast deploying
+    - Push images and run them on the server -- easy cleanup of the old versions
+* Reproducibility
+    - Images are snapshots of full "operating systems" (except for kernel, see the first section), containing installed packages, user application, etc. Therefore, they are more likely to reproduce same results on different machines compared to for example following detailed installation instructions.
+* Resource management
+    - Allows limiting CPU, memory, etc usage of a container.
+
+## Street knowledge
+### Dangers of :latest flag
+Because `:latest` flag of an image is moved forward by developers of the image with each new release, it hinder reproducibility.
+I always try to use pinned versions, i.e. `ubuntu:jammy` instead of `ubuntu:latest`.
+
 ### Entrypoint override
-Override entrypoint with `docker run --entrypoint` to run `/bin/bash` for example, even on `nginx` image, etc.
+Override entrypoint with `docker run --entrypoint` to run `/bin/bash` for example, even on `nginx` image, etc. I suggest the following to understand [difference between Entrypoint and Command](https://stackoverflow.com/questions/21553353/what-is-the-difference-between-cmd-and-entrypoint-in-a-dockerfile).
 
 ### Exec
 To get a shell into a running container, use:
