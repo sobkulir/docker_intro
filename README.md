@@ -198,11 +198,11 @@ TODO
 ## Footnotes
 
 Very good:
-    1. [Understanding virtualization](https://www.vmware.com/content/dam/digitalmarketing/vmware/en/pdf/techpaper/VMware_paravirtualization.pdf)
+1. [Understanding virtualization](https://www.vmware.com/content/dam/digitalmarketing/vmware/en/pdf/techpaper/VMware_paravirtualization.pdf)
 
 On Docker security:
-    1. [Is Docker more secure than VMs or bare metal?](https://security.stackexchange.com/a/169649)
+1. [Is Docker more secure than VMs or bare metal?](https://security.stackexchange.com/a/169649)
 
 From random internet meanderings:
-    1. [Virtual machine vs Docker](https://stackoverflow.com/questions/16047306/how-is-docker-different-from-a-virtual-machine)
-    2. [How can Docker run distros with different kernels?](https://stackoverflow.com/questions/32841982/how-can-docker-run-distros-with-different-kernels)
+1. [Virtual machine vs Docker](https://stackoverflow.com/questions/16047306/how-is-docker-different-from-a-virtual-machine)
+2. [How can Docker run distros with different kernels?](https://stackoverflow.com/questions/32841982/how-can-docker-run-distros-with-different-kernels)
